@@ -1,34 +1,34 @@
 # UndertakingG — Backend (Bun/Hono)
 
-This is the AI-driven API service of the **UndertakingG** platform. It provides specialized orchestration for generative models to generate structured strategic insights for entrepreneurs.
+Este es el servicio de API impulsado por IA de la plataforma **UndertakingG**. Proporciona una orquestación especializada para modelos generativos con el fin de generar análisis estratégicos estructurados para emprendedores.
 
-## 🚀 API Overview
+## 🚀 Descripción de la API
 
-The backend is built with **Bun** and **Hono**, designed for low-latency responses and highly-structured data processing.
+El backend está construido con **Bun** y **Hono**, diseñado para respuestas de baja latencia y procesamiento de datos altamente estructurados.
 
-### Main Service Endpoints:
-- **`POST /api/preguntas/foda-zona`**: SWOT analysis and regional market assessment.
-- **`POST /api/preguntas/producto-estrategia`**: Value proposition, audience, and term-based strategies.
-- **`POST /api/preguntas/pasos-presupuesto`**: Operational and legal roadmap with structured budgeting.
+### Endpoints Principales del Servicio:
+- **`POST /api/preguntas/foda-zona`**: Análisis FODA (SWOT) y evaluación del mercado regional.
+- **`POST /api/preguntas/producto-estrategia`**: Propuesta de valor, audiencia y estrategias por plazos.
+- **`POST /api/preguntas/pasos-presupuesto`**: Hoja de ruta operativa y legal con presupuestos estructurados.
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Tecnológico
 
 - **Runtime**: Bun
 - **Framework**: Hono
-- **Language**: TypeScript
-- **AI Orchestration**: OpenRouter SDK
-- **Data Safety**: Middleware-based input validation and sanitization.
+- **Lenguaje**: TypeScript
+- **Orquestación de IA**: SDK de OpenRouter
+- **Seguridad de Datos**: Validación y sanitización de entradas basada en middleware.
 
-## ⚙️ Key Architectural Features
+## ⚙️ Características Arquitectónicas Clave
 
-- **Prompt Separation**: Prompts are strategically isolated to ensure high model reliability and token efficiency.
-- **Dynamic AI Model Selection**: Built to consume specific models via configuration for optimized cost and performance.
-- **Resilient AI Calling**: Implements retry patterns with exponential backoff for external API dependency stability.
-- **Structured JSON Validation**: Ensures all AI responses adhere to strict JSON schemas before being served.
+- **Separación de Prompts**: Los prompts están aislados estratégicamente para asegurar una alta confiabilidad del modelo y eficiencia en el uso de tokens.
+- **Selección Dinámica de Modelo de IA**: Construido para consumir modelos específicos vía configuración para optimizar costo y rendimiento.
+- **Llamadas de IA Resilientes**: Implementa patrones de reintento con backoff exponencial para estabilidad ante dependencias de APIs externas.
+- **Validación de JSON Estructurado**: Asegura que todas las respuestas de la IA se ajusten a esquemas JSON estrictos antes de ser enviadas.
 
-## 🛠️ Commands
+## 🛠️ Comandos
 
-From the `backend` directory:
-- `bun install`: Install dependencies.
-- `bun run dev`: Start the local development server in watch mode.
-- `bun run test`: Run backend tests (if available).
+Desde el directorio `backend`:
+- `bun install`: Instala las dependencias.
+- `bun run dev`: Inicia el servidor de desarrollo local en modo watch.
+- `bun run test`: Ejecuta las pruebas del backend (si están disponibles).

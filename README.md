@@ -1,27 +1,27 @@
-# UndertakingG — AI Business Analysis Monorepo
+# UndertakingG — Monorepo de Análisis de Negocios con IA
 
-UndertakingG is a comprehensive platform designed to provide entrepreneurs with data-driven insights for their business ideas. By leveraging generative AI, the platform transforms initial concepts into structured strategic plans, including SWOT analysis, product positioning, and detailed budgeting.
+UndertakingG es una plataforma integral diseñada para proporcionar a los emprendedores información basada en datos para sus ideas de negocio. Utilizando IA generativa, la plataforma transforma conceptos iniciales en planes estratégicos estructurados, incluyendo análisis FODA, posicionamiento de producto y presupuestos detallados.
 
-## 🏗️ Monorepo Architecture
+## 🏗️ Arquitectura del Monorepo
 
-This project is organized as a monorepo containing two main specialized services:
+Este proyecto está organizado como un monorepo que contiene dos servicios especializados principales:
 
-- **Frontend (`/frontend`)**: A high-performance web interface built with **Astro**. It features a "Ledger Blueprint" design system for clear, professional results visualization.
-- **Backend (`/backend`)**: A fast, lightweight API service powered by **Bun** and **Hono**. It handles complex orchestration with AI providers to generate structured business intelligence.
+- **Frontend (`/frontend`)**: Una interfaz web de alto rendimiento construida con **Astro**. Incluye el sistema de diseño "Ledger Blueprint" para una visualización clara y profesional de los resultados.
+- **Backend (`/backend`)**: Un servicio de API rápido y ligero impulsado por **Bun** y **Hono**. Gestiona la orquestación compleja con proveedores de IA para generar inteligencia de negocios estructurada.
 
-## 🚀 Core Features
+## 🚀 Características Principales
 
-- **Strategic Analysis**: Automated FODA (SWOT) and regional market assessment.
-- **Product Strategy**: Definition of value propositions, target audiences, and multi-term growth strategies.
-- **Blueprint Planning**: Step-by-step operational and legal roadmap with estimated budgeting.
-- **Technical Integrity**: Built with TypeScript for full-stack type safety and structured output validation.
+- **Análisis Estratégico**: Evaluación automatizada de FODA (SWOT) y del mercado regional.
+- **Estrategia de Producto**: Definición de propuestas de valor, audiencias objetivo y estrategias de crecimiento a corto, mediano y largo plazo.
+- **Planificación Blueprint**: Hoja de ruta operativa y legal paso a paso con presupuestos estimados.
+- **Integridad Técnica**: Construido con TypeScript para asegurar la consistencia de tipos en todo el stack y validación de salidas estructuradas.
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Tecnológico
 
 - **Runtime**: Bun
 - **Frontend**: Astro, TypeScript
 - **Backend**: Hono, OpenRouter SDK
-- **Design**: Custom CSS-based "Ledger Blueprint" system
+- **Diseño**: Sistema personalizado "Ledger Blueprint" basado en CSS
 
 ---
-*Created with a focus on technical precision and entrepreneurial clarity.*
+*Creado con un enfoque en la precisión técnica y la claridad empresarial.*
