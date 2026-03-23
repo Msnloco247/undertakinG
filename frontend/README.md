@@ -1,46 +1,31 @@
-# Astro Starter Kit: Basics
+# UndertakingG — Frontend (Astro)
 
-```sh
-npm create astro@latest -- --template basics
-```
+This is the interactive web interface of the **UndertakingG** platform. It provides a seamless data collection process for entrepreneurs and renders detailed business insights using a specialized "Ledger Blueprint" design system.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🚀 Key Features
 
-## 🚀 Project Structure
+- **Intuitive Questionnaires**: Smart forms with character counters and real-time validation.
+- **Ledger Blueprint Display**: A high-contrast, technical design that visualizes business plans with financial clarity.
+- **Parallel Result Fetching**: Asynchronous data retrieval to show multiple strategic analyses simultaneously.
+- **Skeleton Screen Loading**: Structured loaders that mirror final results to improve perceived performance.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🛠️ Tech Stack
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+- **Framework**: Astro (SSG/SSR)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS with a focus on typography and high-contrast aesthetics.
+- **State**: Client-side form management and asynchronous result rendering.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🎨 Design Principles
 
-## 🧞 Commands
+The UI follows a "Ledger Blueprint" aesthetic:
+- **Typography**: `DM Serif Display` for authority and `JetBrains Mono` for technical accuracy.
+- **Separation**: High-contrast dividers and dashed vertical rules for logical grouping.
+- **Focus**: Strategic use of gold accents to highlight critical budget and growth metrics.
 
-All commands are run from the root of the project, from a terminal:
+## 🛠️ Commands
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+From the `frontend` directory:
+- `bun install`: Install dependencies.
+- `bun run dev`: Start the local development server.
+- `bun run build`: Build for production.
