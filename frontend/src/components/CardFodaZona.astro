@@ -1,0 +1,283 @@
+---
+// CardFodaZona.astro
+// Renders the FODA matrix + geographical zone analysis
+---
+
+<section class="result-card" id="card-foda-zona" aria-live="polite" aria-label="Análisis FODA y Zona">
+  <!-- Skeleton state (shown while loading) -->
+  <div class="skeleton-state" id="skeleton-foda">
+    <div class="card-header-skeleton">
+      <div class="skel skel-tag"></div>
+      <div class="skel skel-title"></div>
+    </div>
+    <div class="foda-grid skeleton-grid">
+      <div class="skel skel-quad"></div>
+      <div class="skel skel-quad"></div>
+      <div class="skel skel-quad"></div>
+      <div class="skel skel-quad"></div>
+    </div>
+    <div class="skel skel-zone"></div>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-state hidden" id="error-foda">
+    <div class="error-icon">⚠</div>
+    <p class="error-title">Error al analizar FODA</p>
+    <p class="error-msg" id="error-foda-msg"></p>
+  </div>
+
+  <!-- Content state (hidden until data arrives) -->
+  <div class="content-state hidden" id="content-foda">
+    <header class="card-header">
+      <span class="card-tag">01</span>
+      <h2 class="card-title">FODA · Zona Geográfica</h2>
+      <p class="card-subtitle" id="foda-modelo"></p>
+    </header>
+
+    <!-- FODA 2×2 matrix -->
+    <div class="foda-grid">
+      <div class="foda-quad foda-f">
+        <h3 class="quad-label">
+          <span class="quad-dot dot-f"></span>Fortalezas
+        </h3>
+        <ul class="foda-items" id="foda-fortalezas"></ul>
+      </div>
+      <div class="foda-quad foda-o">
+        <h3 class="quad-label">
+          <span class="quad-dot dot-o"></span>Oportunidades
+        </h3>
+        <ul class="foda-items" id="foda-oportunidades"></ul>
+      </div>
+      <div class="foda-quad foda-d">
+        <h3 class="quad-label">
+          <span class="quad-dot dot-d"></span>Debilidades
+        </h3>
+        <ul class="foda-items" id="foda-debilidades"></ul>
+      </div>
+      <div class="foda-quad foda-a">
+        <h3 class="quad-label">
+          <span class="quad-dot dot-a"></span>Amenazas
+        </h3>
+        <ul class="foda-items" id="foda-amenazas"></ul>
+      </div>
+    </div>
+
+    <!-- Zone analysis -->
+    <div class="zona-card">
+      <h3 class="zona-title">Análisis de Zona</h3>
+      <p class="zona-desc" id="zona-descripcion"></p>
+      <div class="zona-cols">
+        <div class="zona-col">
+          <h4 class="zona-col-label col-ventajas">Ventajas</h4>
+          <ul class="zona-list" id="zona-ventajas"></ul>
+        </div>
+        <div class="zona-col">
+          <h4 class="zona-col-label col-desventajas">Desventajas</h4>
+          <ul class="zona-list" id="zona-desventajas"></ul>
+        </div>
+      </div>
+      <div class="zona-recomendacion">
+        <span class="rec-label">Recomendación</span>
+        <p id="zona-recomendacion"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .result-card {
+    background: var(--bg-base);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-8);
+    min-height: 280px;
+    transition: border-color 0.3s var(--ease-out);
+  }
+
+  .result-card:has(.content-state:not(.hidden)) {
+    border-color: var(--border-emphasis);
+  }
+
+  /* ── Skeleton ────────────────────────────────────────────────────────────── */
+  .card-header-skeleton { margin-bottom: var(--sp-6); }
+  .skel-tag  { width: 28px; height: 14px; margin-bottom: var(--sp-2); }
+  .skel-title { width: 55%; height: 22px; }
+
+  .skeleton-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+  .skel-quad { height: 120px; border-radius: var(--radius-md); }
+  .skel-zone { height: 80px; border-radius: var(--radius-md); }
+
+  /* ── Error ───────────────────────────────────────────────────────────────── */
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-height: 200px;
+    text-align: center;
+    background: var(--error-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid hsl(0 50% 30%);
+    padding: var(--sp-8);
+  }
+  .error-icon { font-size: 28px; }
+  .error-title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: hsl(0 70% 65%);
+  }
+  .error-msg {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .hidden { display: none !important; }
+
+  /* ── FODA grid ───────────────────────────────────────────────────────────── */
+  .foda-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-6);
+  }
+
+  .foda-quad {
+    background: var(--bg-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--sp-4);
+  }
+
+  .quad-label {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-3);
+  }
+
+  .quad-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-f { background: hsl(150 55% 42%); }
+  .dot-o { background: hsl(200 70% 52%); }
+  .dot-d { background: hsl(38  85% 52%); }
+  .dot-a { background: hsl(0   65% 52%); }
+
+  .foda-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .foda-items li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-left: var(--sp-3);
+    border-left: 2px solid var(--border-subtle);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px dotted var(--border-subtle);
+    line-height: 1.5;
+  }
+
+  .foda-items li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .foda-keyword {
+    display: inline;
+    font-weight: 700;
+    color: var(--amber); /* Stand out clearly */
+  }
+
+  /* ── Zone ────────────────────────────────────────────────────────────────── */
+  .zona-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--sp-5);
+  }
+
+  .zona-title {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: var(--sp-3);
+  }
+
+  .zona-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-4);
+    line-height: 1.6;
+  }
+
+  .zona-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-4);
+  }
+
+  .zona-col-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: var(--sp-2);
+  }
+  .col-ventajas   { color: hsl(150 55% 42%); }
+  .col-desventajas { color: hsl(0 65% 52%); }
+
+  .zona-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .zona-list li {
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    padding-left: var(--sp-3);
+    border-left: 1px solid var(--border-default);
+    line-height: 1.4;
+  }
+
+  .zona-recomendacion {
+    background: var(--amber-subtle);
+    border: 1px solid var(--amber-glow);
+    border-radius: var(--radius-sm);
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .rec-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    margin-bottom: var(--sp-1);
+  }
+  .zona-recomendacion p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 600px) {
+    .foda-grid, .zona-cols { grid-template-columns: 1fr; }
+    .result-card { padding: var(--sp-5); }
+  }
+</style>

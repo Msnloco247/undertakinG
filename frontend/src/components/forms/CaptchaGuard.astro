@@ -1,0 +1,127 @@
+---
+// CaptchaGuard.astro
+// Web component que maneja la verificación humana (EmprendeIA Protect)
+---
+
+<captcha-guard id="main-captcha" class="captcha-guard-module">
+  <div class="captcha-wrapper">
+    <div class="captcha-box" id="captcha-box" tabindex="0" role="checkbox" aria-checked="false">
+      <div class="captcha-visual">
+        <div class="captcha-spinner hidden" id="captcha-spinner"></div>
+        <svg class="captcha-check hidden" id="captcha-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <span class="captcha-text" id="captcha-text">Verificar que soy humano</span>
+    </div>
+    <div class="captcha-branding">
+      <div class="branding-logo"></div>
+      <span>EmprendeIA Protect</span>
+    </div>
+  </div>
+  <span class="q-error hidden" id="captcha-error" role="alert">Por favor, completa la verificación de seguridad.</span>
+</captcha-guard>
+
+<style>
+  .captcha-guard-module { display: block; margin-top: var(--sp-6); }
+  .captcha-wrapper {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg-surface); border: 1px solid var(--border-default);
+    padding: var(--sp-4); border-radius: var(--radius-md); max-width: 400px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.2s ease;
+  }
+  .captcha-wrapper:hover { border-color: var(--border-hover); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+  .captcha-wrapper.verifying { border-color: var(--amber-dim); }
+  .captcha-wrapper.verified { border-color: #10b981; }
+  
+  .captcha-box { display: flex; align-items: center; gap: var(--sp-3); cursor: pointer; user-select: none; }
+  .captcha-visual {
+    width: 28px; height: 28px; border: 2px solid var(--border-subtle);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    background: var(--bg-body); transition: all 0.2s ease; position: relative;
+  }
+  .captcha-box:hover .captcha-visual { border-color: var(--border-hover); }
+  .captcha-wrapper.verified .captcha-visual { background: #10b981; border-color: #10b981; }
+  
+  .captcha-spinner {
+    width: 16px; height: 16px; border: 2px solid transparent; border-top-color: var(--amber);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  .captcha-check { width: 16px; height: 16px; color: white; stroke-dasharray: 24; stroke-dashoffset: 24; }
+  .captcha-wrapper.verified .captcha-check { animation: drawCheck 0.4s ease forwards; }
+  
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  .captcha-text { font-weight: 500; color: var(--text-primary); transition: color 0.2s; }
+  .captcha-wrapper.verified .captcha-text { color: #10b981; }
+  
+  .captcha-branding { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .branding-logo { width: 24px; height: 24px; background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%); border-radius: 6px; }
+  .captcha-branding span { font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  
+  .captcha-guard-module .q-error { margin-top: 8px; display: block; }
+</style>
+
+<script>
+class CaptchaGuard extends HTMLElement {
+  #solved = false;
+  get isSolved() { return this.#solved; }
+  
+  showError() {
+    this.querySelector('#captcha-error')?.classList.remove('hidden');
+  }
+  
+  hideError() {
+    this.querySelector('#captcha-error')?.classList.add('hidden');
+  }
+
+  connectedCallback() {
+    const box = this.querySelector('#captcha-box') as HTMLElement;
+    const wrapper = this.querySelector('.captcha-wrapper') as HTMLElement;
+    const visual = this.querySelector('.captcha-visual') as HTMLElement;
+    const spinner = this.querySelector('#captcha-spinner') as HTMLElement;
+    const check = this.querySelector('#captcha-check') as HTMLElement;
+    const text = this.querySelector('#captcha-text') as HTMLElement;
+
+    let verifying = false;
+
+    const startVerification = () => {
+      if (this.#solved || verifying) return;
+      verifying = true;
+      this.hideError();
+      
+      wrapper.classList.add('verifying');
+      spinner.classList.remove('hidden');
+      visual.style.borderColor = 'var(--amber)';
+      text.textContent = 'Verificando analizador heurístico...';
+      
+      setTimeout(() => {
+        verifying = false;
+        this.#solved = true;
+        
+        wrapper.classList.remove('verifying');
+        wrapper.classList.add('verified');
+        spinner.classList.add('hidden');
+        check.classList.remove('hidden');
+        text.textContent = 'Verificación exitosa';
+        
+        box.setAttribute('aria-checked', 'true');
+        box.style.cursor = 'default';
+        
+        // Disparar evento custom si alguien quiere escucharlo
+        this.dispatchEvent(new CustomEvent('captcha-solved', { bubbles: true }));
+      }, 1500 + Math.random() * 800);
+    };
+
+    box.addEventListener('click', startVerification);
+    box.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        startVerification();
+      }
+    });
+  }
+}
+customElements.define('captcha-guard', CaptchaGuard);
+</script>

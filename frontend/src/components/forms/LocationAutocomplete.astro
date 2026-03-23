@@ -1,0 +1,213 @@
+---
+// LocationAutocomplete.astro
+// Web component that handles city/region searches using Open-Meteo
+---
+
+<location-autocomplete>
+  <div class="q-group" data-field="ubicacion">
+    <label class="q-label" for="q-ubicacion">
+      <span class="q-num">01</span>
+      ¿En qué ciudad o región planeas operar?
+      <span class="q-required">*</span>
+    </label>
+    <div class="autocomplete-wrapper" id="autocomplete-wrapper">
+      <input
+        type="text"
+        id="q-ubicacion"
+        name="ubicacion"
+        class="q-input"
+        placeholder="Ej: Caracas, Venezuela"
+        maxlength="200"
+        required
+        aria-describedby="q-ubicacion-error"
+        autocomplete="off"
+      />
+      <div class="autocomplete-spinner hidden" id="ac-spinner"></div>
+      <ul class="autocomplete-dropdown hidden" id="ac-dropdown" role="listbox"></ul>
+    </div>
+    <span class="q-error hidden" id="q-ubicacion-error" role="alert"></span>
+  </div>
+</location-autocomplete>
+
+<style>
+  /* Local styles for autocomplete if any... */
+  .autocomplete-wrapper { position: relative; }
+  .autocomplete-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    max-height: 250px; overflow-y: auto;
+    background: var(--bg-overlay); backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid var(--border-default); border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 100;
+    display: flex; flex-direction: column; gap: 2px; padding: 4px;
+    list-style: none; margin: 0;
+  }
+  .autocomplete-dropdown.hidden { display: none !important; }
+  .ac-item {
+    padding: var(--sp-2) var(--sp-3); cursor: pointer; border-radius: var(--radius-sm);
+    display: flex; flex-direction: column; transition: background 0.15s;
+  }
+  .ac-item:hover, .ac-item.focused { background: var(--bg-raised); border-color: var(--amber-dim); }
+  .ac-city { font-weight: 600; font-size: 0.9rem; color: var(--text-primary); }
+  .ac-region { font-size: 0.75rem; color: var(--text-tertiary); }
+  .ac-item-empty { padding: var(--sp-3); font-size: 0.85rem; color: var(--text-muted); text-align: center; }
+  
+  .autocomplete-spinner {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px;
+    border: 2px solid var(--border-subtle); border-top-color: var(--amber);
+    border-radius: 50%; animation: spin 0.8s linear infinite; pointer-events: none;
+  }
+  .autocomplete-spinner.hidden { display: none !important; }
+  @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+</style>
+
+<script>
+class LocationAutocomplete extends HTMLElement {
+  connectedCallback() {
+    const ubiInput = this.querySelector('#q-ubicacion') as HTMLInputElement;
+    const ubiSpinner = this.querySelector('#ac-spinner')!;
+    const ubiDropdown = this.querySelector('#ac-dropdown')!;
+    const wrapper = this.querySelector('#autocomplete-wrapper')!;
+
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    let activeAutocompleteIndex = -1;
+    let autocompleteResults: any[] = [];
+
+    const DEFAULT_LOCATIONS = [
+      { name: 'Caracas', admin1: 'Distrito Capital', country: 'Venezuela' },
+      { name: 'Bogotá', admin1: 'Bogotá D.C.', country: 'Colombia' },
+      { name: 'Lima', admin1: 'Provincia de Lima', country: 'Perú' },
+      { name: 'Santiago', admin1: 'Región Metropolitana', country: 'Chile' },
+      { name: 'Buenos Aires', admin1: 'CABA', country: 'Argentina' }
+    ];
+
+    const escHtml = (s: string) => {
+      if (!s) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    };
+
+    const renderAutocomplete = (results: any[]) => {
+      if (results.length === 0) {
+        ubiDropdown.innerHTML = '<li class="ac-item-empty">No se encontraron ubicaciones.</li>';
+        ubiDropdown.classList.remove('hidden');
+        return;
+      }
+      
+      ubiDropdown.innerHTML = results.map((r, i) => {
+        return `<li class="ac-item" role="option" data-idx="${i}" tabindex="-1">
+          <span class="ac-city">${escHtml(r.name)}</span>
+          <span class="ac-region">${escHtml([r.admin1, r.country].filter(Boolean).join(', '))}</span>
+        </li>`;
+      }).join('');
+      
+      ubiDropdown.classList.remove('hidden');
+      activeAutocompleteIndex = -1;
+      
+      const items = ubiDropdown.querySelectorAll('.ac-item');
+      items.forEach(item => {
+        item.addEventListener('click', (e) => {
+          const idx = parseInt((e.currentTarget as HTMLElement).dataset.idx || '0', 10);
+          selectAutocompleteResult(idx);
+        });
+      });
+    };
+
+    const showDefaultLocations = () => {
+      autocompleteResults = [...DEFAULT_LOCATIONS];
+      renderAutocomplete(autocompleteResults);
+    };
+
+    const fetchLocations = async (query: string) => {
+      if (!query || query.trim().length < 2) {
+        showDefaultLocations();
+        return;
+      }
+      
+      ubiSpinner.classList.remove('hidden');
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=es&format=json`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        
+        autocompleteResults = data.results || [];
+        renderAutocomplete(autocompleteResults);
+      } catch (err) {
+        console.error('Error fetching locations:', err);
+        ubiDropdown.classList.add('hidden');
+      } finally {
+        ubiSpinner.classList.add('hidden');
+      }
+    };
+
+    const selectAutocompleteResult = (index: number) => {
+      if (index < 0 || index >= autocompleteResults.length) return;
+      const r = autocompleteResults[index];
+      const locationName = [r.name, r.admin1, r.country].filter(Boolean).join(', ');
+      ubiInput.value = locationName;
+      ubiDropdown.classList.add('hidden');
+      ubiInput.dispatchEvent(new Event('blur', { bubbles: true })); // Triggers field validation in parent
+      ubiInput.focus();
+    };
+
+    ubiInput.addEventListener('focus', () => {
+      const val = ubiInput.value.trim();
+      if (val.length < 2) {
+        showDefaultLocations();
+      } else if (autocompleteResults.length > 0) {
+        ubiDropdown.classList.remove('hidden');
+      }
+    });
+
+    ubiInput.addEventListener('input', (e) => {
+      const val = (e.target as HTMLInputElement).value;
+      clearTimeout(debounceTimer);
+      if (val.trim().length < 2) {
+        showDefaultLocations();
+        return;
+      }
+      debounceTimer = setTimeout(() => fetchLocations(val), 400); 
+    });
+
+    ubiInput.addEventListener('keydown', (e) => {
+      if (ubiDropdown.classList.contains('hidden') || autocompleteResults.length === 0) return;
+      const items = Array.from(ubiDropdown.querySelectorAll('.ac-item')) as HTMLElement[];
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeAutocompleteIndex = Math.min(activeAutocompleteIndex + 1, items.length - 1);
+        updateAutocompleteFocus(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeAutocompleteIndex = Math.max(activeAutocompleteIndex - 1, 0);
+        updateAutocompleteFocus(items);
+      } else if (e.key === 'Enter') {
+        if (activeAutocompleteIndex >= 0) {
+          e.preventDefault();
+          selectAutocompleteResult(activeAutocompleteIndex);
+        }
+      } else if (e.key === 'Escape') {
+        ubiDropdown.classList.add('hidden');
+      }
+    });
+
+    const updateAutocompleteFocus = (items: HTMLElement[]) => {
+      items.forEach((item, i) => {
+        if (i === activeAutocompleteIndex) {
+          item.classList.add('focused');
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          item.classList.remove('focused');
+        }
+      });
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target as Node)) {
+        ubiDropdown.classList.add('hidden');
+      }
+    });
+  }
+}
+customElements.define('location-autocomplete', LocationAutocomplete);
+</script>

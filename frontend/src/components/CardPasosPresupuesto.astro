@@ -1,0 +1,316 @@
+---
+// CardPasosPresupuesto.astro
+// Renders step-by-step entrepreneurship plan with budget
+---
+
+<section class="result-card" id="card-pasos-presupuesto" aria-live="polite" aria-label="Pasos y Presupuesto">
+  <!-- Skeleton -->
+  <div class="skeleton-state" id="skeleton-pasos">
+    <div class="card-header-skeleton">
+      <div class="skel skel-tag"></div>
+      <div class="skel skel-title"></div>
+    </div>
+    <div class="skel skel-budget"></div>
+    <div class="pasos-skel">
+      <div class="skel skel-paso"></div>
+      <div class="skel skel-paso"></div>
+      <div class="skel skel-paso"></div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-state hidden" id="error-pasos">
+    <div class="error-icon">⚠</div>
+    <p class="error-title">Error al generar el plan</p>
+    <p class="error-msg" id="error-pasos-msg"></p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-state hidden" id="content-pasos">
+    <header class="card-header">
+      <span class="card-tag">03</span>
+      <h2 class="card-title">Plan · Presupuesto</h2>
+      <p class="card-subtitle" id="pasos-modelo"></p>
+    </header>
+
+    <!-- Total budget badge -->
+    <div class="budget-badge">
+      <span class="budget-label">Presupuesto Total Estimado</span>
+      <span class="budget-amount" id="pasos-total"></span>
+    </div>
+
+    <!-- Steps timeline -->
+    <ol class="pasos-timeline" id="pasos-lista"></ol>
+  </div>
+</section>
+
+<style>
+  .result-card {
+    background: var(--bg-base);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-8);
+    min-height: 280px;
+    transition: border-color 0.3s var(--ease-out);
+  }
+  .result-card:has(.content-state:not(.hidden)) {
+    border-color: var(--border-emphasis);
+  }
+
+  /* ── Skeleton ─────────────────────────────────────────────────────────────── */
+  .card-header-skeleton { margin-bottom: var(--sp-6); }
+  .skel-tag   { width: 28px; height: 14px; margin-bottom: var(--sp-2); }
+  .skel-title { width: 50%; height: 22px; }
+  .skel-budget { height: 52px; border-radius: var(--radius-md); margin-bottom: var(--sp-6); }
+  .pasos-skel { display: flex; flex-direction: column; gap: var(--sp-3); }
+  .skel-paso { height: 90px; border-radius: var(--radius-md); }
+
+  /* ── Error ────────────────────────────────────────────────────────────────── */
+  .error-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--sp-2); min-height: 200px; text-align: center;
+    background: var(--error-bg); border: 1px solid hsl(0 50% 30%);
+    border-radius: var(--radius-lg); padding: var(--sp-8);
+  }
+  .error-icon { font-size: 28px; }
+  .error-title { font-weight: 600; color: hsl(0 70% 65%); }
+  .error-msg { font-size: 0.875rem; color: var(--text-secondary); }
+
+  .hidden { display: none !important; }
+
+  /* ── Budget badge ─────────────────────────────────────────────────────────── */
+  .budget-badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--amber-subtle);
+    border: 1px solid var(--amber-glow);
+    border-radius: var(--radius-md);
+    padding: var(--sp-4) var(--sp-5);
+    margin-bottom: var(--sp-6);
+  }
+
+  .budget-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .budget-amount {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: 500;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Timeline ─────────────────────────────────────────────────────────────── */
+  .pasos-timeline {
+    list-style: none;
+    position: relative;
+    padding-left: var(--sp-8);
+  }
+
+  .pasos-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--amber-dim), var(--border-default));
+  }
+
+  /* These li styles are injected via JS */
+  .paso-item {
+    position: relative;
+    margin-bottom: var(--sp-8);
+    padding: var(--sp-6);
+    background: var(--bg-raised);
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--amber-dim);
+    border-radius: var(--radius-md);
+    transition: border-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 16px hsl(0 0% 0% / 0.2);
+  }
+
+  .paso-item:hover {
+    border-color: var(--amber);
+    transform: translateY(-2px);
+  }
+
+  /* ── Timeline ─────────────────────────────────────────────────────────────── */
+  .pasos-timeline {
+    list-style: none;
+    position: relative;
+    padding-left: 0;
+  }
+
+  /* Vertical anchor line */
+  .pasos-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--amber) 0%, var(--border-subtle) 100%);
+    opacity: 0.3;
+  }
+
+  .paso-item {
+    position: relative;
+    margin-bottom: var(--sp-12);
+    padding-left: var(--sp-10);
+    transition: transform 0.2s;
+  }
+
+  .paso-header-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--sp-4);
+    gap: var(--sp-1);
+  }
+
+  .paso-number {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .paso-nombre {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-top: var(--sp-1);
+  }
+
+  /* The Aesthetic Border (Ledger Line) */
+  .paso-divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber) 0%, transparent 80%);
+    margin-bottom: var(--sp-6);
+    opacity: 0.8;
+  }
+
+  .paso-phase {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid var(--border-default);
+    padding: 2px 8px;
+    border-radius: 2px;
+    width: fit-content;
+  }
+
+  /* Structured Data Rows */
+  .paso-data-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .data-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: var(--sp-4);
+    align-items: baseline;
+  }
+
+  .data-key {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    border-right: 1px solid var(--border-subtle);
+    padding-right: var(--sp-3);
+  }
+
+  .data-value {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  /* Highlight for budget value */
+  .data-row.highlight .data-value {
+    color: var(--amber);
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  /* Spacer for next step */
+  .paso-spacer {
+    height: var(--sp-12);
+    border-bottom: 1px dashed var(--border-subtle);
+    margin-top: var(--sp-4);
+    margin-bottom: var(--sp-8);
+  }
+
+  @media (max-width: 700px) {
+    .data-row {
+      grid-template-columns: 1fr;
+      gap: var(--sp-1);
+    }
+    .data-key {
+      border-right: none;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+    }
+    .paso-nombre { font-size: 1.2rem; }
+  }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-2);
+  }
+
+  .meta-chip {
+    background: var(--bg-overlay);
+    border-radius: var(--radius-sm);
+    padding: var(--sp-2) var(--sp-3);
+  }
+
+  .meta-chip-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .meta-chip-value {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .chip-presupuesto .meta-chip-value {
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 700px) {
+    .paso-meta { grid-template-columns: 1fr; }
+    .result-card { padding: var(--sp-5); }
+    .budget-badge { flex-direction: column; gap: var(--sp-2); text-align: center; }
+  }
+</style>
