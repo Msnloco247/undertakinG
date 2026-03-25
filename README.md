@@ -13,15 +13,25 @@ Este proyecto está organizado como un monorepo que contiene dos servicios espec
 
 - **Análisis Estratégico**: Evaluación automatizada de FODA (SWOT) y del mercado regional.
 - **Estrategia de Producto**: Definición de propuestas de valor, audiencias objetivo y estrategias de crecimiento a corto, mediano y largo plazo.
-- **Planificación Blueprint**: Hoja de ruta operativa y legal paso a paso con presupuestos estimados.
-- **Integridad Técnica**: Construido con TypeScript para asegurar la consistencia de tipos en todo el stack y validación de salidas estructuradas.
+- **Planificación de Pasos**: Hoja de ruta operativa y legal paso a paso con presupuestos estimados.
+- **Seguridad y Resiliencia**: Protecciones contra *Prompt Injection*, limitación de tasa (Rate Limiting) y validación estricta de datos.
 
 ## 🛠️ Stack Tecnológico
 
 - **Runtime**: Bun
-- **Frontend**: Astro, TypeScript
-- **Backend**: Hono, OpenRouter SDK
-- **Diseño**: Sistema personalizado "Ledger Blueprint" basado en CSS
+- **Frontend**: Astro (TypeScript)
+- **Backend**: Hono (TypeScript)
+- **Infraestructura**: Docker & Docker Compose
+- **IA**: OpenRouter SDK
+
+## 📦 Despliegue Rápido
+
+El proyecto está preparado para ejecutarse con Docker.
+
+```bash
+cd backend
+docker-compose up --build -d
+```
 
 ---
-*Creado con un enfoque en la precisión técnica y la claridad empresarial.*
+*Este proyecto transforma ideas crudas en planes de negocio estructurados mediante inteligencia artificial.*

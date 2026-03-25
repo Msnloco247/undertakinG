@@ -1,8 +1,0 @@
-{
-  "name": "undertaking-g",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ]
-}

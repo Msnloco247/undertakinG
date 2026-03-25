@@ -3,26 +3,29 @@
 // Renders product analysis + short/medium/long-term strategies
 ---
 
-<section class="result-card" id="card-producto-estrategia" aria-live="polite" aria-label="Análisis de Producto y Estrategias">
+<section
+  class="bg-bg-base border border-border-default rounded-xl p-8 min-h-[280px] transition-colors duration-300 ease-out has-[.content-state:not(.hidden)]:border-border-emphasis"
+  id="card-producto-estrategia"
+  aria-live="polite"
+  aria-label="Análisis de Producto y Estrategias"
+>
   <!-- Skeleton -->
-  <div class="skeleton-state" id="skeleton-producto">
-    <div class="card-header-skeleton">
-      <div class="skel skel-tag"></div>
-      <div class="skel skel-title"></div>
-    </div>
-    <div class="skel skel-block"></div>
-    <div class="estrategia-grid skeleton-grid">
-      <div class="skel skel-col"></div>
-      <div class="skel skel-col"></div>
-      <div class="skel skel-col"></div>
-    </div>
+  <div class="skeleton-state flex flex-col items-center justify-center py-sp-12 text-center" id="skeleton-producto">
+    <div class="w-12 h-12 border-4 border-amber/20 border-t-amber rounded-full animate-spin mb-sp-4"></div>
+    <p class="font-display text-xl text-text-primary animate-pulse">Definiendo tu estrategia...</p>
+    <p class="text-sm text-text-tertiary mt-2">Optimizando tu propuesta de valor y diferenciadores</p>
   </div>
 
   <!-- Error -->
-  <div class="error-state hidden" id="error-producto">
-    <div class="error-icon">⚠</div>
-    <p class="error-title">Error al analizar el producto</p>
-    <p class="error-msg" id="error-producto-msg"></p>
+  <div
+    class="error-state hidden flex flex-col items-center justify-center gap-sp-2 min-h-[200px] text-center bg-error-bg border border-[hsl(0,50%,30%)] rounded-lg p-8"
+    id="error-producto"
+  >
+    <div class="text-[28px]">⚠</div>
+    <p class="font-semibold text-[hsl(0,70%,65%)]">
+      Error al analizar el producto
+    </p>
+    <p class="text-[0.875rem] text-text-secondary" id="error-producto-msg"></p>
   </div>
 
   <!-- Content -->
@@ -34,210 +37,117 @@
     </header>
 
     <!-- Product card -->
-    <div class="producto-block">
-      <p class="bloque-label">Propuesta de Valor</p>
-      <p class="propuesta-valor" id="producto-propuesta"></p>
+    <div
+      class="bg-bg-raised border border-border-subtle rounded-md p-sp-5 mb-sp-6"
+    >
+      <p
+        class="font-mono text-[0.68rem] tracking-widest uppercase text-amber mb-sp-2"
+      >
+        Propuesta de Valor
+      </p>
+      <p
+        class="font-display italic text-clamp-[1rem,2.5vw,1.2rem] text-text-primary leading-tight mb-sp-4 pb-sp-4 border-b border-border-subtle"
+        id="producto-propuesta"
+      >
+      </p>
 
-      <div class="producto-meta">
+      <div class="grid grid-cols-2 gap-sp-4 mb-sp-4 max-[700px]:grid-cols-1">
         <div class="meta-item">
-          <span class="meta-label">Descripción</span>
-          <p class="meta-value" id="producto-descripcion"></p>
+          <span
+            class="block text-[0.7rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-1"
+            >Descripción</span
+          >
+          <p
+            class="text-[0.88rem] text-text-secondary leading-relaxed"
+            id="producto-descripcion"
+          >
+          </p>
         </div>
         <div class="meta-item">
-          <span class="meta-label">Público Objetivo</span>
-          <p class="meta-value" id="producto-publico"></p>
+          <span
+            class="block text-[0.7rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-1"
+            >Público Objetivo</span
+          >
+          <p
+            class="text-[0.88rem] text-text-secondary leading-relaxed"
+            id="producto-publico"
+          >
+          </p>
         </div>
       </div>
 
-      <div class="diferenciadores-block">
-        <span class="meta-label">Diferenciadores clave</span>
-        <ul class="diferenciadores-list" id="producto-diferenciadores"></ul>
+      <div class="mt-sp-2">
+        <span
+          class="block text-[0.7rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-1"
+          >Diferenciadores clave</span
+        >
+        <ul
+          class="list-none flex flex-wrap gap-sp-2 mt-sp-2 text-amber"
+          id="producto-diferenciadores"
+        >
+        </ul>
       </div>
     </div>
 
     <!-- Strategies 3-column -->
-    <div class="estrategia-grid">
-      <div class="estrategia-col">
-        <h3 class="plazo-label">
-          <span class="plazo-icon">▸</span>Corto plazo
+    <div class="grid grid-cols-3 gap-sp-3 max-[700px]:grid-cols-1">
+      <div class="bg-bg-raised border border-border-subtle rounded-md p-sp-4">
+        <h3
+          class="flex items-center gap-sp-2 font-body text-[0.75rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-3"
+        >
+          <span class="font-mono text-[0.65rem] text-amber tracking-[-2px]"
+            >▸</span
+          >Corto plazo
         </h3>
-        <ul class="estrategia-list" id="estrategia-corto"></ul>
+        <ul class="list-none flex flex-col gap-sp-2" id="estrategia-corto"></ul>
       </div>
-      <div class="estrategia-col">
-        <h3 class="plazo-label">
-          <span class="plazo-icon">▸▸</span>Mediano plazo
+      <div class="bg-bg-raised border border-border-subtle rounded-md p-sp-4">
+        <h3
+          class="flex items-center gap-sp-2 font-body text-[0.75rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-3"
+        >
+          <span class="font-mono text-[0.65rem] text-amber tracking-[-2px]"
+            >▸▸</span
+          >Mediano plazo
         </h3>
-        <ul class="estrategia-list" id="estrategia-mediano"></ul>
+        <ul class="list-none flex flex-col gap-sp-2" id="estrategia-mediano">
+        </ul>
       </div>
-      <div class="estrategia-col">
-        <h3 class="plazo-label">
-          <span class="plazo-icon">▸▸▸</span>Largo plazo
+      <div class="bg-bg-raised border border-border-subtle rounded-md p-sp-4">
+        <h3
+          class="flex items-center gap-sp-2 font-body text-[0.75rem] font-semibold tracking-widest uppercase text-text-tertiary mb-sp-3"
+        >
+          <span class="font-mono text-[0.65rem] text-amber tracking-[-2px]"
+            >▸▸▸</span
+          >Largo plazo
         </h3>
-        <ul class="estrategia-list" id="estrategia-largo"></ul>
+        <ul class="list-none flex flex-col gap-sp-2" id="estrategia-largo"></ul>
       </div>
     </div>
   </div>
 </section>
 
-<style>
-  .result-card {
-    background: var(--bg-base);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-xl);
-    padding: var(--sp-8);
-    min-height: 280px;
-    transition: border-color 0.3s var(--ease-out);
-  }
-
-  .result-card:has(.content-state:not(.hidden)) {
-    border-color: var(--border-emphasis);
-  }
-
-  /* ── Skeleton ─────────────────────────────────────────────────────────────── */
-  .card-header-skeleton { margin-bottom: var(--sp-6); }
-  .skel-tag   { width: 28px; height: 14px; margin-bottom: var(--sp-2); }
-  .skel-title { width: 60%; height: 22px; }
-  .skel-block { height: 100px; border-radius: var(--radius-md); margin-bottom: var(--sp-4); }
-  .skeleton-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-3); }
-  .skel-col { height: 140px; border-radius: var(--radius-md); }
-
-  /* ── Error ────────────────────────────────────────────────────────────────── */
-  .error-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: var(--sp-2); min-height: 200px; text-align: center;
-    background: var(--error-bg); border: 1px solid hsl(0 50% 30%);
-    border-radius: var(--radius-lg); padding: var(--sp-8);
-  }
-  .error-icon { font-size: 28px; }
-  .error-title { font-weight: 600; color: hsl(0 70% 65%); }
-  .error-msg { font-size: 0.875rem; color: var(--text-secondary); }
-
-  .hidden { display: none !important; }
-
-  /* ── Product block ────────────────────────────────────────────────────────── */
-  .producto-block {
-    background: var(--bg-raised);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--sp-5);
-    margin-bottom: var(--sp-6);
-  }
-
-  .bloque-label {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: var(--sp-2);
-  }
-
-  .propuesta-valor {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    color: var(--text-primary);
-    line-height: 1.45;
-    margin-bottom: var(--sp-4);
-    padding-bottom: var(--sp-4);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .producto-meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-4);
-    margin-bottom: var(--sp-4);
-  }
-
-  .meta-label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin-bottom: var(--sp-1);
-  }
-
-  .meta-value {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  .diferenciadores-block { margin-top: var(--sp-2); }
-
-  .diferenciadores-list {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-top: var(--sp-2);
-  }
-
-  .diferenciadores-list li {
-    background: var(--amber-subtle);
-    border: 1px solid var(--amber-glow);
+<style is:global>
+  #producto-diferenciadores li {
+    background: var(--color-amber-subtle);
+    border: 1px solid var(--color-amber-glow);
     border-radius: var(--radius-sm);
-    padding: 3px var(--sp-3);
+    padding: 3px var(--spacing-sp-3);
     font-size: 0.78rem;
-    color: hsl(42 90% 72%);
+    color: hsl(30 80% 35%);
     font-family: var(--font-mono);
-  }
-
-  /* ── Strategies grid ──────────────────────────────────────────────────────── */
-  .estrategia-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--sp-3);
-  }
-
-  .estrategia-col {
-    background: var(--bg-raised);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--sp-4);
-  }
-
-  .plazo-label {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin-bottom: var(--sp-3);
-  }
-
-  .plazo-icon {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--amber);
-    letter-spacing: -2px;
-  }
-
-  .estrategia-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
   }
   .estrategia-list li {
     font-size: 0.83rem;
-    color: var(--text-secondary);
-    padding-left: var(--sp-3);
-    border-left: 2px solid var(--border-default);
+    color: var(--color-text-secondary);
+    padding-left: var(--spacing-sp-3);
+    border-left: 2px solid var(--color-border-default);
     line-height: 1.45;
     transition: border-color 0.2s;
   }
-  .estrategia-list li:hover { border-left-color: var(--amber-dim); }
-
-  @media (max-width: 700px) {
-    .estrategia-grid, .producto-meta { grid-template-columns: 1fr; }
-    .result-card { padding: var(--sp-5); }
+  .estrategia-list li:hover {
+    border-left-color: var(--color-amber-dim);
+  }
+  .hidden {
+    display: none !important;
   }
 </style>

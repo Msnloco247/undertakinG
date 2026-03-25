@@ -4,61 +4,56 @@
 ---
 
 <location-autocomplete>
-  <div class="q-group" data-field="ubicacion">
-    <label class="q-label" for="q-ubicacion">
-      <span class="q-num">01</span>
+  <div class="q-group mb-sp-8" data-field="ubicacion">
+    <label class="block text-[0.95rem] font-bold text-text-primary mb-sp-3 leading-tight cursor-pointer" for="q-ubicacion">
+      <span class="font-mono text-[0.7rem] text-amber-dim tracking-wider mr-2 bg-white px-2 py-0.5 rounded border border-border-subtle shadow-sm">01</span>
       ¿En qué ciudad o región planeas operar?
-      <span class="q-required">*</span>
+      <span class="text-error ml-1">*</span>
     </label>
-    <div class="autocomplete-wrapper" id="autocomplete-wrapper">
+    <div class="relative" id="autocomplete-wrapper">
       <input
         type="text"
         id="q-ubicacion"
         name="ubicacion"
-        class="q-input"
+        class="w-full bg-white border border-border-default rounded-xl px-sp-5 py-sp-4 text-text-primary placeholder:text-text-muted focus:border-amber focus:ring-4 focus:ring-amber/10 transition-all duration-300 outline-none shadow-sm"
         placeholder="Ej: Caracas, Venezuela"
         maxlength="200"
         required
         aria-describedby="q-ubicacion-error"
         autocomplete="off"
       />
-      <div class="autocomplete-spinner hidden" id="ac-spinner"></div>
-      <ul class="autocomplete-dropdown hidden" id="ac-dropdown" role="listbox"></ul>
+      <div class="hidden absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-border-subtle border-t-amber rounded-full animate-spin pointer-events-none" id="ac-spinner"></div>
+      <ul class="hidden absolute top-[calc(100%+8px)] left-0 right-0 max-h-[280px] overflow-y-auto bg-white border border-border-default rounded-2xl shadow-2xl shadow-blue-900/10 z-[100] flex flex-col gap-1 p-2 list-none m-0 animate-[fadeUp_0.2s_ease-out]" id="ac-dropdown" role="listbox"></ul>
     </div>
-    <span class="q-error hidden" id="q-ubicacion-error" role="alert"></span>
+    <span class="hidden mt-2 block text-error text-[0.85rem] font-semibold" id="q-ubicacion-error" role="alert"></span>
   </div>
 </location-autocomplete>
 
-<style>
-  /* Local styles for autocomplete if any... */
-  .autocomplete-wrapper { position: relative; }
-  .autocomplete-dropdown {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-    max-height: 250px; overflow-y: auto;
-    background: var(--bg-overlay); backdrop-filter: blur(12px) saturate(1.2);
-    border: 1px solid var(--border-default); border-radius: var(--radius-md);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 100;
-    display: flex; flex-direction: column; gap: 2px; padding: 4px;
-    list-style: none; margin: 0;
-  }
-  .autocomplete-dropdown.hidden { display: none !important; }
+<style is:global>
   .ac-item {
-    padding: var(--sp-2) var(--sp-3); cursor: pointer; border-radius: var(--radius-sm);
-    display: flex; flex-direction: column; transition: background 0.15s;
+    padding: var(--spacing-sp-3) var(--spacing-sp-4);
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s;
+    border: 1px solid transparent;
   }
-  .ac-item:hover, .ac-item.focused { background: var(--bg-raised); border-color: var(--amber-dim); }
-  .ac-city { font-weight: 600; font-size: 0.9rem; color: var(--text-primary); }
-  .ac-region { font-size: 0.75rem; color: var(--text-tertiary); }
-  .ac-item-empty { padding: var(--sp-3); font-size: 0.85rem; color: var(--text-muted); text-align: center; }
-  
-  .autocomplete-spinner {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    width: 16px; height: 16px;
-    border: 2px solid var(--border-subtle); border-top-color: var(--amber);
-    border-radius: 50%; animation: spin 0.8s linear infinite; pointer-events: none;
+  .ac-item:hover, .ac-item.focused { 
+    background: var(--color-bg-canvas); 
+    border-color: var(--color-border-subtle);
+    transform: translateX(4px);
   }
-  .autocomplete-spinner.hidden { display: none !important; }
-  @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+  .ac-city { font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); }
+  .ac-region { font-size: 0.8rem; color: var(--color-text-tertiary); margin-top: 1px; }
+  .ac-item-empty { 
+    padding: var(--spacing-sp-4); 
+    font-size: 0.9rem; 
+    color: var(--color-text-muted); 
+    text-align: center; 
+    font-style: italic;
+  }
+  .hidden { display: none !important; }
 </style>
 
 <script>
@@ -146,7 +141,7 @@ class LocationAutocomplete extends HTMLElement {
       const locationName = [r.name, r.admin1, r.country].filter(Boolean).join(', ');
       ubiInput.value = locationName;
       ubiDropdown.classList.add('hidden');
-      ubiInput.dispatchEvent(new Event('blur', { bubbles: true })); // Triggers field validation in parent
+      ubiInput.dispatchEvent(new Event('blur', { bubbles: true })); 
       ubiInput.focus();
     };
 

@@ -3,64 +3,61 @@
 // Web component que maneja la verificación humana (EmprendeIA Protect)
 ---
 
-<captcha-guard id="main-captcha" class="captcha-guard-module">
-  <div class="captcha-wrapper">
-    <div class="captcha-box" id="captcha-box" tabindex="0" role="checkbox" aria-checked="false">
-      <div class="captcha-visual">
-        <div class="captcha-spinner hidden" id="captcha-spinner"></div>
-        <svg class="captcha-check hidden" id="captcha-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+<captcha-guard id="main-captcha" class="block mt-sp-8">
+  <div class="captcha-wrapper group relative flex items-center justify-between bg-bg-base border border-border-default p-sp-5 rounded-xl max-w-[440px] shadow-sm transition-all duration-300 ease-out hover:border-amber/30 hover:shadow-md [&.verifying]:border-amber-dim [&.verified]:border-success [&.verified]:bg-success/5">
+    <div class="flex items-center gap-sp-4 cursor-pointer select-none" id="captcha-box" tabindex="0" role="checkbox" aria-checked="false">
+      <div class="captcha-visual w-8 h-8 border-2 border-border-emphasis rounded-lg flex items-center justify-center bg-bg-control transition-all duration-300 ease-out group-hover:scale-105 relative overflow-hidden">
+        <div class="hidden w-5 h-5 border-2 border-transparent border-t-amber rounded-full animate-spin" id="captcha-spinner"></div>
+        <svg class="hidden w-5 h-5 text-white" id="captcha-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" style="stroke-dasharray: 24; stroke-dashoffset: 24;">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <span class="captcha-text" id="captcha-text">Verificar que soy humano</span>
+      <div class="flex flex-col">
+        <span class="font-medium text-text-primary text-[0.95rem] transition-colors duration-300" id="captcha-text">Verificar identidad</span>
+        <span class="text-[0.7rem] text-text-muted mt-0.5" id="captcha-subtext">Protección inteligente EmprendeIA</span>
+      </div>
     </div>
-    <div class="captcha-branding">
-      <div class="branding-logo"></div>
-      <span>EmprendeIA Protect</span>
+    <div class="flex flex-col items-end opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300">
+      <div class="w-7 h-7 bg-linear-to-br from-amber/80 to-amber-dim rounded-lg shadow-inner flex items-center justify-center">
+        <span class="text-[10px] text-bg-canvas font-bold">IA</span>
+      </div>
     </div>
   </div>
-  <span class="q-error hidden" id="captcha-error" role="alert">Por favor, completa la verificación de seguridad.</span>
+  <span class="hidden mt-sp-2 px-2 text-error text-[0.8rem] font-medium" id="captcha-error" role="alert">Por favor, completa la verificación para continuar.</span>
 </captcha-guard>
 
-<style>
-  .captcha-guard-module { display: block; margin-top: var(--sp-6); }
-  .captcha-wrapper {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg-surface); border: 1px solid var(--border-default);
-    padding: var(--sp-4); border-radius: var(--radius-md); max-width: 400px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.2s ease;
-  }
-  .captcha-wrapper:hover { border-color: var(--border-hover); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-  .captcha-wrapper.verifying { border-color: var(--amber-dim); }
-  .captcha-wrapper.verified { border-color: #10b981; }
-  
-  .captcha-box { display: flex; align-items: center; gap: var(--sp-3); cursor: pointer; user-select: none; }
-  .captcha-visual {
-    width: 28px; height: 28px; border: 2px solid var(--border-subtle);
-    border-radius: 4px; display: flex; align-items: center; justify-content: center;
-    background: var(--bg-body); transition: all 0.2s ease; position: relative;
-  }
-  .captcha-box:hover .captcha-visual { border-color: var(--border-hover); }
-  .captcha-wrapper.verified .captcha-visual { background: #10b981; border-color: #10b981; }
-  
-  .captcha-spinner {
-    width: 16px; height: 16px; border: 2px solid transparent; border-top-color: var(--amber);
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-  }
-  .captcha-check { width: 16px; height: 16px; color: white; stroke-dasharray: 24; stroke-dashoffset: 24; }
-  .captcha-wrapper.verified .captcha-check { animation: drawCheck 0.4s ease forwards; }
-  
+<style is:global>
   @keyframes drawCheck { to { stroke-dashoffset: 0; } }
-  @keyframes spin { to { transform: rotate(360deg); } }
   
-  .captcha-text { font-weight: 500; color: var(--text-primary); transition: color 0.2s; }
-  .captcha-wrapper.verified .captcha-text { color: #10b981; }
+  /* Robust state management */
+  .captcha-wrapper.verified {
+    border-color: var(--color-success) !important;
+  }
+  .captcha-wrapper.verified .captcha-visual {
+    background-color: var(--color-success) !important;
+    border-color: var(--color-success) !important;
+    transform: scale(1) !important;
+  }
+  .captcha-wrapper.verified #captcha-check {
+    display: block !important;
+    animation: drawCheck 0.4s ease forwards;
+  }
+  .captcha-wrapper.verified #captcha-text {
+    color: var(--color-text-primary) !important;
+  }
+  .captcha-wrapper.verified #captcha-subtext {
+    color: var(--color-success) !important;
+    content: 'Identidad confirmada';
+  }
   
-  .captcha-branding { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-  .branding-logo { width: 24px; height: 24px; background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%); border-radius: 6px; }
-  .captcha-branding span { font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-  
-  .captcha-guard-module .q-error { margin-top: 8px; display: block; }
+  .captcha-wrapper.verifying .captcha-visual {
+    border-color: var(--color-amber) !important;
+  }
+  .captcha-wrapper.verifying #captcha-spinner {
+    display: block !important;
+  }
+
+  .hidden { display: none !important; }
 </style>
 
 <script>
@@ -92,9 +89,7 @@ class CaptchaGuard extends HTMLElement {
       this.hideError();
       
       wrapper.classList.add('verifying');
-      spinner.classList.remove('hidden');
-      visual.style.borderColor = 'var(--amber)';
-      text.textContent = 'Verificando analizador heurístico...';
+      text.textContent = 'Analizando identidad...';
       
       setTimeout(() => {
         verifying = false;
@@ -102,14 +97,14 @@ class CaptchaGuard extends HTMLElement {
         
         wrapper.classList.remove('verifying');
         wrapper.classList.add('verified');
-        spinner.classList.add('hidden');
-        check.classList.remove('hidden');
         text.textContent = 'Verificación exitosa';
+        if (this.querySelector('#captcha-subtext')) {
+          this.querySelector('#captcha-subtext')!.textContent = 'Humano confirmado';
+        }
         
         box.setAttribute('aria-checked', 'true');
         box.style.cursor = 'default';
         
-        // Disparar evento custom si alguien quiere escucharlo
         this.dispatchEvent(new CustomEvent('captcha-solved', { bubbles: true }));
       }, 1500 + Math.random() * 800);
     };
